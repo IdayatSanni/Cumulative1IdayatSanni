@@ -1,0 +1,36 @@
+﻿@model IEnumerable<SchoolProject.Models.Teacher>
+@{
+    ViewBag.Title = "List";
+}
+
+
+
+<div id="containerlist">
+    <div class="list-group-item row">
+        <form action="/Teacher/List" method="GET">
+            <input type="text" name="SearchKey" />
+            <input type="submit" value="Search" />
+        </form>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-danger">
+            No teacher matches your search. Try again
+        </div>
+    }
+    else
+    {
+        <h2>List Of The Teachers</h2>
+        foreach (var teacher in Model)
+        {
+            <div class="list-group-item row show-class">
+
+                <div class="col-md-12">
+                    <a class="class-link" href="/Teacher/Show/@teacher.TeacherId">@teacher.TeacherFname @teacher.TeacherLname</a>
+                </div>
+            </div>
+        }
+    }
+</div>
+

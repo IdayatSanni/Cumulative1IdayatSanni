@@ -87,10 +87,11 @@ namespace SchoolProject.Controllers
             while (ResultSet.Read())
             {
 
-                int TeacherId = Convert.ToInt32(ResultSet["teacherid"]);
-                decimal Salary = Convert.ToDecimal(ResultSet["salary"]);
-                string TeacherFname = (string)ResultSet["teacherfname"];
-                string TeacherLname = (string)ResultSet["teacherlname"];
+               
+                int TeacherId = ResultSet["teacherid"] != DBNull.Value ? Convert.ToInt32(ResultSet["teacherid"]) : 0;
+                decimal Salary = ResultSet["salary"] != DBNull.Value ? Convert.ToDecimal(ResultSet["salary"]) : 0.0m;
+                string TeacherFname = ResultSet["teacherfname"] != DBNull.Value ? Convert.ToString(ResultSet["teacherfname"]) : string.Empty;
+                string TeacherLname = ResultSet["teacherlname"] != DBNull.Value ? Convert.ToString(ResultSet["teacherlname"]) : string.Empty;
                 string EmployeeNumber = (string)ResultSet["employeenumber"];
 
                 // convert date to string
@@ -138,7 +139,8 @@ namespace SchoolProject.Controllers
             MySqlCommand cmd = Conn.CreateCommand();
 
             //SQL QUERY
-            cmd.CommandText = "Select * from Teachers where teacherid = " +id;
+            cmd.CommandText = "Select * from Teachers where teacherid = "+id;
+            
 
             //Gather Result Set of Query into a variable
             MySqlDataReader ResultSet = cmd.ExecuteReader();
@@ -147,11 +149,11 @@ namespace SchoolProject.Controllers
             //Loop Through Each Row the Result Set
             while (ResultSet.Read())
             {
-                
-                int TeacherId = Convert.ToInt32(ResultSet["teacherid"]);
-                decimal Salary = Convert.ToDecimal(ResultSet["salary"]);
-                string TeacherFname = (string)ResultSet["teacherfname"];
-                string TeacherLname = (string)ResultSet["teacherlname"];
+
+                int TeacherId = ResultSet["teacherid"] != DBNull.Value ? Convert.ToInt32(ResultSet["teacherid"]) : 0;
+                decimal Salary = ResultSet["salary"] != DBNull.Value ? Convert.ToDecimal(ResultSet["salary"]) : 0.0m;
+                string TeacherFname = ResultSet["teacherfname"] != DBNull.Value ? Convert.ToString(ResultSet["teacherfname"]) : string.Empty;
+                string TeacherLname = ResultSet["teacherlname"] != DBNull.Value ? Convert.ToString(ResultSet["teacherlname"]) : string.Empty;
                 string EmployeeNumber = (string)ResultSet["employeenumber"];
 
 
@@ -175,5 +177,73 @@ namespace SchoolProject.Controllers
             //Return the teacher object
             return NewTeacher;
         }
+
+        /// <summary>
+        /// Deletes a teacher from the connected MySQL Database if the ID of that Article exists. Does NOT maintain relational integrity. 
+        /// </summary>
+        /// <param name="id">The ID of the Article.</param>
+        /// <example>POST /api/TeacherData/DeleteTeacher/3</example>
+
+        [HttpPost]
+        public void DeleteTeacher(int id)
+        {
+            //Create an instance of a connection
+            MySqlConnection Conn = School.AccessDatabase();
+
+            //Open the connection between the web server and database
+            Conn.Open();
+
+            //Establish a new command (query) for our database
+            MySqlCommand cmd = Conn.CreateCommand();
+
+            // SQL Query
+            cmd.CommandText = "Delete from teachers where teacherid=@id";
+            cmd.Parameters.AddWithValue("@id", id);
+            cmd.Prepare();
+            cmd.ExecuteNonQuery();
+
+            Conn.Close();
+        }
+        [HttpPost]
+        /// <summary>
+        /// Adds a teacher to the MySQL Database. 
+        /// </summary>
+        /// <param name="NewTeacher">An object with fields that map to the columns of the Teacher's table. </param>
+        /// <example>
+        /// POST api/TeacherData/AddTeacher
+        /// FORM DATA / POST DATA / REQUEST BODY 
+        /// {
+        ///	"TeacherFname":"Idayat",
+        ///	"TeacherLname":"Sanni",
+        ///	"EmployeeNumber":"T903",
+        ///	"Salary":90.00,
+        ///	"HireDate":currentdate,
+        /// }
+        /// </example>
+        public void AddTeacher ([FromBody]Teacher NewTeacher)
+        {
+            //Exit method if model fields are not included.
+            if (!NewTeacher.IsValid()) return;
+            //Create an instance of a connection
+            MySqlConnection Conn = School.AccessDatabase();
+
+            //Open the connection between the web server and database
+            Conn.Open();
+
+            //Establish a new command (query) for our database
+            MySqlCommand cmd = Conn.CreateCommand();
+
+            // SQL Query
+            cmd.CommandText = "insert into teachers (teacherfname, teacherlname, employeenumber, hiredate, salary) values (@TeacherFname,@TeacherLname,@EmployeeNumber, CURRENT_DATE(), @Salary)";
+            cmd.Parameters.AddWithValue("@TeacherFname", NewTeacher.TeacherFname);
+            cmd.Parameters.AddWithValue("@TeacherLname", NewTeacher.TeacherLname);
+            cmd.Parameters.AddWithValue("@EmployeeNumber", NewTeacher.EmployeeNumber);
+            cmd.Parameters.AddWithValue("@Salary", NewTeacher.Salary);
+            cmd.Prepare();
+            cmd.ExecuteNonQuery();
+
+            Conn.Close();
+        }
     }
+    
 }

@@ -1,0 +1,33 @@
+﻿@model SchoolProject.Models.Teacher
+@{
+    ViewBag.Title = "New";
+}
+
+<h2>Add Teacher</h2>
+<form method="post" action="/Teacher/Create" onsubmit="return ValidateTeacher();">
+    <div style="margin-bottom: 6px;">
+        <label for="TeacherFname">First Name:</label>
+        <input type="text" id="TeacherFname" name="TeacherFname" asp-for="TeacherFname" />
+        <span asp-validation-for="TeacherFname" class="text-danger">Teacher's First name is required</span>
+    </div>
+    <div style="margin-bottom: 6px;">
+        <label for="TeacherLname">Last Name:</label>
+        <input type="text" id="TeacherLname" name="TeacherLname" asp-for="TeacherLname" />
+        <span asp-validation-for="TeacherLname" class="text-danger">Teacher's Last name is required</span>
+    </div>
+    <div style="margin-bottom: 6px;">
+        <label for="EmployeeNumber">Employee Number:</label>
+        <input type="text" id="EmployeeNumber" name="EmployeeNumber" asp-for="EmployeeNumber" />
+        <span asp-validation-for="EmployeeNumber" class="text-danger">Teacher's Employee Number is required</span>
+    </div>
+    <div style="margin-bottom: 6px;">
+        <label for="Salary">Salary:</label>
+        <input type="number" id="Salary" min="0" value="0" step=".01" name="Salary" asp-for="Salary" />
+        <span asp-validation-for="EmployeeNumber" class="text-danger">Teacher's Employee Number is required</span>
+    </div>
+    <div style="margin-bottom: 6px;">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
+
+

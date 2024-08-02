@@ -6,7 +6,11 @@
 }
 
 /* Set width on the form input elements since they're 100% wide by default */
-
+input,
+select,
+textarea {
+    max-width: 280px;
+}
 
 /* Align text heading center */
 h2,
@@ -38,33 +42,6 @@ h4 {
     margin: 10px;
     background: #ff6a00;
     color: #ffffff;
-    float: left;
-}
-
-.del-link {
-    padding: 10px;
-    margin: 10px;
-    background: red;
-    color: #ffffff;
-    float: right;
-}
-
-.del-link:hover {
-    background: #ffffff;
-    color: red;
-}
-
-.cancel-link {
-    padding: 10px;
-    margin: 10px;
-    background: red;
-    color: #ffffff;
-    text-align:center;
-}
-
-.cancel-link:hover {
-        background: #ffffff;
-        color: darkred;
 }
 
 .navi-link:hover {
